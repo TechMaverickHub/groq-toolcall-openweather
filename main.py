@@ -34,6 +34,8 @@ def get_current_weather(location):
         return json.dumps({"error": f"API Error: {str(e)}"})
 
 # --- Define Tools ---
+
+
 tools = [
     {
         "type": "function",
@@ -81,11 +83,13 @@ if st.button("Get Weather"):
                 groq_response = response.choices[0].message
             
                 # Step 2: Extract args and call function
+                # Retrieval
                 args = json.loads(groq_response.tool_calls[0].function.arguments)
                 
                 weather_result = get_current_weather(**args)
                 
                 # Step 3: Feed back to model for natural answer
+                # Augmentation
                 final_response = client.chat.completions.create(
                 model="openai/gpt-oss-20b",
                 messages=[
@@ -117,6 +121,7 @@ if st.button("Get Weather"):
 
 
                 st.success("✅ Weather data retrieved successfully!")
+                #Generation
                 st.write(final_response.choices[0].message.content)
 
                 # Optional: Show structured weather info
